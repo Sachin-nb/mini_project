@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qualitron - Accessories</title>
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Your Custom CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    .accessory-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .accessory-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .accessory-image {
+        height: 200px;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .accessory-image img {
+        max-height: 180px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+        background: #f8f9fa;
+    }
+    
+    .accessory-image .placeholder-icon {
+        font-size: 48px;
+        color: #adb5bd;
+    }
+
+    .accessory-card:hover .accessory-image img {
+        transform: scale(1.05);
+    }
+
+    .category-section {
+        padding: 40px 0;
+    }
+
+    .category-title {
+        position: relative;
+        margin-bottom: 40px;
+        text-align: center;
+        color: #2c3e50;
+    }
+
+    .category-title::after {
+        content: '';
+        display: block;
+        width: 50px;
+        height: 3px;
+        background: #3498db;
+        margin: 10px auto;
+    }
+
+    .price {
+        color: #27ae60;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .feature-list li {
+        padding: 4px 0;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .feature-list li i {
+        color: #3498db;
+        margin-right: 5px;
+    }
+
+    .buy-btn {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        border: none;
+        width: 100%;
+        padding: 10px;
+        color: white;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .buy-btn:hover {
+        background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+</style>
+</head>
+<body>
+   <!-- Navbar -->
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <img src="{{ url_for('static', filename='images/Qualitron.png') }}" alt="Qualitron Logo" class="logo me-2">
+    </a>
+
+    <!-- Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-center gap-3">
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link active text-dark fw-semibold" href="/shop">Shop</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/products">Laptops</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/warranty">Warranty</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/about">About Us</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/contact">Contact Us</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/admin/login">Admin</a></li>
+        <li class="nav-item position-relative">
+  <a class="nav-link text-dark fw-semibold" href="/cart">
+    Cart
+   {% if cart_count > 0 %}
+<span class="badge bg-danger rounded-pill" id="cart-count-badge">
+  {{ cart_count }}
+</span>
+{% endif %}
+  </a>
+</li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Hero Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <h1 class="text-center mb-4">Laptop Accessories</h1>
+        <p class="text-center text-muted">Enhance your laptop experience with our premium accessories collection.</p>
+    </div>
+</div>
+
+<!-- Mouse Category -->
+<section class="container py-5">
+    <h2 class="text-center mb-4">Mouse & Pointing Devices</h2>
+    <div class="row g-4">
+
+        <!-- ACC001 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://m.media-amazon.com/images/I/61ni3t1ryQL._SL1500_.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>Logitech MX Master 3</h5>
+                    <p class="price">₹9995</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC001">
+                        <input type="hidden" name="name" value="Logitech MX Master 3">
+                        <input type="hidden" name="price" value="9995">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/61ni3t1ryQL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC002 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://m.media-amazon.com/images/I/61mpMH5TzkL._SL1500_.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>Logitech G502 Hero</h5>
+                    <p class="price">₹4995</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC002">
+                        <input type="hidden" name="name" value="Logitech G502 Hero">
+                        <input type="hidden" name="price" value="4995">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/61mpMH5TzkL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC003 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZDxToLpPZ-2qeKoh22SCjYdmIHCUtw1X5_CxNoHbpUuYRGYZpPuPIMHcEtRBHPH_KJ2g">
+                </div>
+                <div class="card-body">
+                    <h5>Microsoft Arc Mouse</h5>
+                    <p class="price">₹6295</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC003">
+                        <input type="hidden" name="name" value="Microsoft Arc Mouse">
+                        <input type="hidden" name="price" value="6295">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZDxToLpPZ-2qeKoh22SCjYdmIHCUtw1X5_CxNoHbpUuYRGYZpPuPIMHcEtRBHPH_KJ2g">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ==================== Keyboards ==================== -->
+<section class="container py-5 bg-light rounded">
+    <h2 class="text-center mb-4">Keyboards</h2>
+    <div class="row g-4">
+
+        <!-- ACC004 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://www.prodotgroup.com/uploads/media/2024/1_HINDI_DEV_KB_-_IMAGES_-_WEB_2024.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>Logitech MX Keys</h5>
+                    <p class="price">₹12995</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC004">
+                        <input type="hidden" name="name" value="Logitech MX Keys">
+                        <input type="hidden" name="price" value="12995">
+                        <input type="hidden" name="image" value="https://www.prodotgroup.com/uploads/media/2024/1_HINDI_DEV_KB_-_IMAGES_-_WEB_2024.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC005 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwaQq30Ot3gBYwLOwqki6py7Upzxt3rmK3mA">
+                </div>
+                <div class="card-body">
+                    <h5>Keychron K2</h5>
+                    <p class="price">₹8995</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC005">
+                        <input type="hidden" name="name" value="Keychron K2">
+                        <input type="hidden" name="price" value="8995">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwaQq30Ot3gBYwLOwqki6py7Upzxt3rmK3mA">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC006 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwds7Yno_J-jgkf3ld8VQ1e5vM361XXUI32_IJehfQPKk-QRLWLJwMhgtNAEmWi-7MMac">
+                </div>
+                <div class="card-body">
+                    <h5>Microsoft Designer Compact</h5>
+                    <p class="price">₹5995</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC006">
+                        <input type="hidden" name="name" value="Microsoft Designer Compact">
+                        <input type="hidden" name="price" value="5995">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwds7Yno_J-jgkf3ld8VQ1e5vM361XXUI32_IJehfQPKk-QRLWLJwMhgtNAEmWi-7MMac">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- ==================== Storage & Power ==================== -->
+<section class="container py-5">
+    <h2 class="text-center mb-4">Storage & Power</h2>
+    <div class="row g-4">
+
+        <!-- ACC007 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe1gfLWocCxUcg03eqdN9E71eJmVez1x72cQ&s">
+                </div>
+                <div class="card-body">
+                    <h5>Qualitron T7 Portable SSD</h5>
+                    <p class="price">₹8999</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC007">
+                        <input type="hidden" name="name" value="Qualitron T7 Portable SSD">
+                        <input type="hidden" name="price" value="8999">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe1gfLWocCxUcg03eqdN9E71eJmVez1x72cQ&s">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC008 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqdrsJOtoyx2vJZdGoX8QtCUarhK9G4iD0CA&s">
+                </div>
+                <div class="card-body">
+                    <h5>20000mAh Power Bank</h5>
+                    <p class="price">₹1999</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC008">
+                        <input type="hidden" name="name" value="20000mAh Power Bank">
+                        <input type="hidden" name="price" value="1999">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqdrsJOtoyx2vJZdGoX8QtCUarhK9G4iD0CA&s">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC009 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg37CfLajGSEKELQ3rRb6fw3Im_9Z0qYxh6g&s">
+                </div>
+                <div class="card-body">
+                    <h5>USB-C Hub 7-in-1</h5>
+                    <p class="price">₹2499</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC009">
+                        <input type="hidden" name="name" value="USB-C Hub 7-in-1">
+                        <input type="hidden" name="price" value="2499">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg37CfLajGSEKELQ3rRb6fw3Im_9Z0qYxh6g&s">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ==================== Laptop Bags ==================== -->
+<section class="container py-5 bg-light">
+    <h2 class="text-center mb-4">Laptop Bags</h2>
+    <div class="row g-4">
+
+        <!-- ACC010 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://www.jiomart.com/images/product/original/rver6nu0fp/safari-elite-25l-sleek-formal-laptop-bag-2-compartments-multiple-front-pockets-bottle-umbrella-holder-trolley-sleeve-premium-office-backpack-for-men-women-ideal-for-college-boys-girls-product-images-orver6nu0fp-p610091686-0-202410111232.jpg?im=Resize=(1000,1000)">
+                </div>
+                <div class="card-body">
+                    <h5>Premium Laptop Backpack</h5>
+                    <p class="price">₹1299</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC010">
+                        <input type="hidden" name="name" value="Premium Laptop Backpack">
+                        <input type="hidden" name="price" value="1299">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/81nKn0ZD3-L._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC011 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://m.media-amazon.com/images/I/91+cOZKs5wL._AC_UF1000,1000_QL80_.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>Executive Laptop Briefcase</h5>
+                    <p class="price">₹1799</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC011">
+                        <input type="hidden" name="name" value="Executive Laptop Briefcase">
+                        <input type="hidden" name="price" value="1799">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/71aXzYKFd9L._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC012 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://fatmug.in/wp-content/uploads/2024/03/600290SWBGA1-1.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>Slim Laptop Sleeve</h5>
+                    <p class="price">₹799</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC012">
+                        <input type="hidden" name="name" value="Slim Laptop Sleeve">
+                        <input type="hidden" name="price" value="799">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/71YxFxHDrNL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ==================== Audio & Accessories ==================== -->
+<section class="container py-5">
+    <h2 class="text-center mb-4">Audio & Accessories</h2>
+    <div class="row g-4">
+
+        <!-- ACC013 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVs1wL72ovntENSnmrZg7NXHvcwZW1ccF3XQ&s">
+                </div>
+                <div class="card-body">
+                    <h5>Qualitron C920x HD Pro Webcam</h5>
+                    <p class="price">₹7995</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC013">
+                        <input type="hidden" name="name" value="Qualitron C920x HD Pro Webcam">
+                        <input type="hidden" name="price" value="7995">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVs1wL72ovntENSnmrZg7NXHvcwZW1ccF3XQ&s">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC014 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://m.media-amazon.com/images/I/61egnO8q6ZL.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>Blue Yeti USB Microphone</h5>
+                    <p class="price">₹12995</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC014">
+                        <input type="hidden" name="name" value="Blue Yeti USB Microphone">
+                        <input type="hidden" name="price" value="12995">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/61egnO8q6ZL.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC015 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdBYsc57GIYxGtS0ipqt6RvPYbMbWKqP4tpg&s">
+                </div>
+                <div class="card-body">
+                    <h5>Qualitron AX-1000XG4 Headphones</h5>
+                    <p class="price">₹24990</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC015">
+                        <input type="hidden" name="name" value="Qualitron AX-1000XG4 Headphones">
+                        <input type="hidden" name="price" value="24990">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdBYsc57GIYxGtS0ipqt6RvPYbMbWKqP4tpg&s">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<section class="container py-5 bg-light">
+    <h2 class="text-center mb-4">Cooling & Support</h2>
+    <div class="row g-4">
+
+        <!-- ACC016 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4dQLuMFVjs9dzdrbaJ7gMZkCmhS2wLS9_IomDcmT3lyPc-KgUQ6z83yJoDLCqG3zA4oI">
+                </div>
+                <div class="card-body">
+                    <h5>Gaming Cooling Pad</h5>
+                    <p class="price">₹2495</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC016">
+                        <input type="hidden" name="name" value="Gaming Cooling Pad">
+                        <input type="hidden" name="price" value="2495">
+                        <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4dQLuMFVjs9dzdrbaJ7gMZkCmhS2wLS9_IomDcmT3lyPc-KgUQ6z83yJoDLCqG3zA4oI">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC017 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://www.ultraprolink.com/cdn/shop/products/mainhero.jpg?v=1754570566&width=416">
+                </div>
+                <div class="card-body">
+                    <h5>Ergonomic Laptop Stand</h5>
+                    <p class="price">₹899</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC017">
+                        <input type="hidden" name="name" value="Ergonomic Laptop Stand">
+                        <input type="hidden" name="price" value="899">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/61Vd7DXnTmL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ==================== Connectivity & Hubs ==================== -->
+<section class="container py-5">
+    <h2 class="text-center mb-4">Connectivity & Hubs</h2>
+    <div class="row g-4">
+
+        <!-- ACC018 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://m.media-amazon.com/images/I/616rcLIf6GL._AC_UF1000,1000_QL80_.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>USB-C Hub (4K HDMI)</h5>
+                    <p class="price">₹2499</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC018">
+                        <input type="hidden" name="name" value="USB-C Hub (4K HDMI)">
+                        <input type="hidden" name="price" value="2499">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/71Jz-p0xJJL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC019 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://m.media-amazon.com/images/I/61xhXY36uhL.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>Bluetooth 5.0 USB Adapter</h5>
+                    <p class="price">₹799</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC019">
+                        <input type="hidden" name="name" value="Bluetooth 5.0 USB Adapter">
+                        <input type="hidden" name="price" value="799">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/61E4wlCCB6L._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC020 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://www.ugreenindia.com/cdn/shop/files/61TYwsSJz3L._SL1500.jpg?v=1761875099&width=1214">
+                </div>
+                <div class="card-body">
+                    <h5>Dual Band USB Wi-Fi Adapter</h5>
+                    <p class="price">₹1299</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC020">
+                        <input type="hidden" name="name" value="Dual Band USB Wi-Fi Adapter">
+                        <input type="hidden" name="price" value="1299">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/61gjV1qpFPL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ==================== Audio & Webcam ==================== -->
+<section class="container py-5 bg-light">
+    <h2 class="text-center mb-4">Audio & Webcam</h2>
+    <div class="row g-4">
+
+        <!-- ACC021 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://m.media-amazon.com/images/I/61dAkngibfL._AC_UF1000,1000_QL80_.jpg">
+                </div>
+                <div class="card-body">
+                    <h5>1080p Full HD Webcam</h5>
+                    <p class="price">₹1999</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC021">
+                        <input type="hidden" name="name" value="1080p Full HD Webcam">
+                        <input type="hidden" name="price" value="1999">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/71zKuNICJAL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC022 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoEIx8yy3BkWs1TGWFLjSDZyYi8KEd4E5ULQ&s">
+                </div>
+                <div class="card-body">
+                    <h5>USB Condenser Microphone</h5>
+                    <p class="price">₹2999</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC022">
+                        <input type="hidden" name="name" value="USB Condenser Microphone">
+                        <input type="hidden" name="price" value="2999">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/71BqnOg0HzL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACC023 -->
+        <div class="col-md-4">
+            <div class="card accessory-card">
+                <div class="accessory-image">
+                    <img src="https://rukminim2.flixcart.com/image/480/480/l4u7vrk0/headphone/w/y/l/latest-edition-m10-tws-wireless-earphones-touch-control-dual-led-original-imagfnhuru5sm8fe.jpeg?q=90">
+                </div>
+                <div class="card-body">
+                    <h5>TWS Wireless Earbuds</h5>
+                    <p class="price">₹3499</p>
+                    <form method="POST" action="/add_to_cart">
+                        <input type="hidden" name="id" value="ACC023">
+                        <input type="hidden" name="name" value="TWS Wireless Earbuds">
+                        <input type="hidden" name="price" value="3499">
+                        <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/61u1VALvkQL._SL1500_.jpg">
+                        <button class="buy-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 LaptopShop. All rights reserved.</p>
+        </div>
+    </footer>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

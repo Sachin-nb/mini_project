@@ -1,0 +1,113 @@
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get product ID from the add-to-cart form or URL
+        const form = document.querySelector('form[action="{{ url_for(\'add_to_cart\') }}"]');
+        const productId = form ? form.querySelector('input[name="id"]').value : null;
+
+        if (!productId) return;
+
+        const mainPriceElement = document.getElementById('main-price');
+        const amazonPriceElement = document.getElementById('amazon-price');
+        const flipkartPriceElement = document.getElementById('flipkart-price');
+        const amazonLink = document.getElementById('amazon-link');
+        const flipkartLink = document.getElementById('flipkart-link');
+        const amazonCard = document.getElementById('amazon-card');
+        const flipkartCard = document.getElementById('flipkart-card');
+        const priceSourceBadge = document.getElementById('price-source-badge');
+
+        fetch(`/api/get_price/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Price data received:', data);  // Debug log
+
+                const formatter = new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR'
+                });
+
+                // Update main price
+                if (data.lowest_price) {
+                    mainPriceElement.innerHTML = `₹${formatter.format(data.lowest_price).replace('₹', '')}`;
+
+                    // Update hidden inputs
+                    if (form < br > {
+                        const priceInput = form.querySelector('input[name="price"]');
+                        if(priceInput) priceInput.value = data.lowest_price;
+                    }
+            const buyForm = document.querySelector('form[action="/buy-now"]');
+                    if (buyForm) {
+                        const priceInput = buyForm.querySelector('input[name="price"]');
+                        if (priceInput) priceInput.value = data.lowest_price;
+                    }
+                }
+
+                // Update Amazon Card - Price
+                if (data.amazon_price) {
+                    amazonPriceElement.innerHTML = `₹${formatter.format(data.amazon_price).replace('₹', '')}`;
+                    amazonPriceElement.classList.remove('text-muted');
+                    amazonPriceElement.classList.add('text-warning', 'fw-bold');
+                } else {
+                    amazonPriceElement.innerHTML = 'Price not available';
+                    amazonPriceElement.classList.remove('fw-bold', 'text-warning');
+                    amazonPriceElement.classList.add('text-muted');
+                    amazonCard.classList.remove('border-warning');
+                    amazonCard.classList.add('border-secondary');
+                }
+
+                // Update Amazon Link - ALWAYS show if link exists, regardless of price
+                if (data.amazon_link && data.amazon_link.trim() !== '') {
+                    amazonLink.classList.remove('disabled');
+                    amazonLink.innerHTML = '🛒 View on Amazon';
+                    amazonLink.href = data.amazon_link;
+                } else {
+                    amazonLink.classList.add('disabled');
+                    amazonLink.innerHTML = 'Not Available';
+                    amazonLink.href = '#';
+                }
+
+                // Update Flipkart Card - Price
+                if (data.flipkart_price) {
+                    flipkartPriceElement.innerHTML = `₹${formatter.format(data.flipkart_price).replace('₹', '')}`;
+                    flipkartPriceElement.classList.remove('text-muted');
+                    flipkartPriceElement.classList.add('text-primary', 'fw-bold');
+                } else {
+                    flipkartPriceElement.innerHTML = 'Price not available';
+                    flipkartPriceElement.classList.remove('fw-bold', 'text-primary');
+                    flipkartPriceElement.classList.add('text-muted');
+                    flipkartCard.classList.remove('border-primary');
+                    flipkartCard.classList.add('border-secondary');
+                }
+
+                // Update Flipkart Link - ALWAYS show if link exists, regardless of price
+                if (data.flipkart_link && data.flipkart_link.trim() !== '') {
+                    flipkartLink.classList.remove('disabled');
+                    flipkartLink.innerHTML = '🛒 View on Flipkart';
+                    flipkartLink.href = data.flipkart_link;
+                } else {
+                    flipkartLink.classList.add('disabled');
+                    flipkartLink.innerHTML = 'Not Available';
+                    flipkartLink.href = '#';
+                }
+
+                // Update Badge
+                if (priceSourceBadge) {
+                    if (data.price_source === 'amazon') {
+                        priceSourceBadge.innerHTML = '<small>🏆 Best price from Amazon</small>';
+                        priceSourceBadge.className = 'text-success';
+                    } else if (data.price_source === 'flipkart') {
+                        priceSourceBadge.innerHTML = '<small>🏆 Best price from Flipkart</small>';
+                        priceSourceBadge.className = 'text-success';
+                    } else {
+                        priceSourceBadge.innerHTML = '<small>💡 Estimated price</small>';
+                        priceSourceBadge.className = 'text-muted';
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching price:", err);
+                // Set fallback for unavailable prices
+                amazonPriceElement.innerHTML = 'Error loading price';
+                flipkartPriceElement.innerHTML = 'Error loading price';
+            });
+    });
+</script>

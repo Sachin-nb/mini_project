@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Monitors</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .monitor-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .monitor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .monitor-image {
+            height: 230px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .monitor-image img {
+            max-height: 210px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .monitor-card:hover .monitor-image img {
+            transform: scale(1.05);
+        }
+
+        .size-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .price {
+            color: #27ae60;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+
+        .feature-list li {
+            padding: 2px 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border: none;
+            width: 100%;
+            padding: 10px;
+            color: white;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .buy-btn:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .size-filter {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+
+        .size-filter .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <img src="{{ url_for('static', filename='images/Qualitron.png') }}" alt="Qualitron Logo" class="logo me-2">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-center gap-3">
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link active text-dark fw-semibold" href="/shop">Shop</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/products">Laptops</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/warranty">Warranty</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/about">About Us</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/contact">Contact Us</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/admin/login">Admin</a></li>
+        <li class="nav-item position-relative">
+          <a class="nav-link text-dark fw-semibold" href="/cart">
+            Cart
+            {% if cart_count > 0 %}
+            <span class="badge bg-danger rounded-pill" id="cart-count-badge">
+              {{ cart_count }}
+            </span>
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="bg-light py-5">
+    <div class="container text-center">
+        <h1 class="mb-3">External Monitors Collection</h1>
+        <p class="text-muted mb-0">Enhance your productivity, gaming and creativity with the perfect external display.</p>
+    </div>
+</div>
+
+<!-- Size Filter -->
+<section class="py-4">
+    <div class="container">
+        <div class="size-filter">
+            <form id="sizeFilterForm" class="row align-items-end">
+                <div class="col-md-5">
+                    <label for="laptopSize" class="form-label">Your Laptop Screen Size</label>
+                    <select class="form-select" id="laptopSize" name="size">
+                        <option value="">Select your laptop screen size</option>
+                        <option value="13">13-inch Laptop</option>
+                        <option value="14">14-inch Laptop</option>
+                        <option value="15">15-inch Laptop</option>
+                        <option value="16">16-inch Laptop</option>
+                        <option value="17">17-inch Laptop</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="usage" class="form-label">Primary Usage</label>
+                    <select class="form-select" id="usage" name="usage">
+                        <option value="general">General Use</option>
+                        <option value="gaming">Gaming</option>
+                        <option value="professional">Professional Work</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100 mt-3 mt-md-0">Show Recommendations</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Monitors Grid -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- MON001 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://m.media-amazon.com/images/I/61V5qkY7UBL._SL1500_.jpg" alt="Samsung 27 4K UHD">
+                        <div class="size-badge">27"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Samsung 27" 4K UHD</h5>
+                        <ul class="feature-list">
+                            <li>4K UHD Resolution</li>
+                            <li>IPS Panel</li>
+                            <li>HDR Support</li>
+                        </ul>
+                        <p class="price mt-auto">₹26,999</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON001">
+                            <input type="hidden" name="name" value="Samsung 27 4K UHD Monitor">
+                            <input type="hidden" name="price" value="26999">
+                            <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/61V5qkY7UBL._SL1500_.jpg">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MON002 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8nyiUQniFTp3atUzIl-nbRP6qUhExbODWyg&s" alt="LG UltraGear 32 165Hz">
+                        <div class="size-badge">32"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">LG UltraGear 32" Gaming 165Hz</h5>
+                        <ul class="feature-list">
+                            <li>1440p QHD</li>
+                            <li>165Hz Refresh Rate</li>
+                            <li>1ms Response Time</li>
+                        </ul>
+                        <p class="price mt-auto">₹33,499</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON002">
+                            <input type="hidden" name="name" value="LG UltraGear 32 Gaming 165Hz Monitor">
+                            <input type="hidden" name="price" value="33499">
+                            <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8nyiUQniFTp3atUzIl-nbRP6qUhExbODWyg&s">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MON003 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV1R4DzJd3ubDAqjEJKnNwlQ2LPq4McPsAsA&s" alt="Acer Nitro 24 Gaming">
+                        <div class="size-badge">24"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Acer Nitro 24" Gaming</h5>
+                        <ul class="feature-list">
+                            <li>Full HD 1080p</li>
+                            <li>144Hz Refresh Rate</li>
+                            <li>AMD FreeSync</li>
+                        </ul>
+                        <p class="price mt-auto">₹20,999</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON003">
+                            <input type="hidden" name="name" value="Acer Nitro 24 Gaming Monitor">
+                            <input type="hidden" name="price" value="20999">
+                            <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV1R4DzJd3ubDAqjEJKnNwlQ2LPq4McPsAsA&s">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MON004 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXZleL_emipZXUXGz_2USaktzjHoBFv5gaCw&s" alt="Dell 24 IPS Full HD">
+                        <div class="size-badge">24"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Dell 24" IPS Full HD</h5>
+                        <ul class="feature-list">
+                            <li>IPS Panel</li>
+                            <li>Thin Bezels</li>
+                            <li>Height Adjustable Stand</li>
+                        </ul>
+                        <p class="price mt-auto">₹12,499</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON004">
+                            <input type="hidden" name="name" value="Dell 24 IPS Full HD Monitor">
+                            <input type="hidden" name="price" value="12499">
+                            <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXZleL_emipZXUXGz_2USaktzjHoBFv5gaCw&s">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MON005 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnW9mB2z98b7655qqV57OHtL_JTlIO19GALg&s" alt="Lenovo Q-Series 27 IPS">
+                        <div class="size-badge">27"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Lenovo Q-Series 27" IPS</h5>
+                        <ul class="feature-list">
+                            <li>QHD Resolution</li>
+                            <li>99% sRGB</li>
+                            <li>Eye Comfort Certified</li>
+                        </ul>
+                        <p class="price mt-auto">₹18,899</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON005">
+                            <input type="hidden" name="name" value="Lenovo Q-Series 27 IPS Monitor">
+                            <input type="hidden" name="price" value="18899">
+                            <input type="hidden" name="image" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnW9mB2z98b7655qqV57OHtL_JTlIO19GALg&s">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MON006 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://m.media-amazon.com/images/I/71F44v0GafL._SL1500_.jpg" alt="ASUS TUF Gaming 28 4K">
+                        <div class="size-badge">28"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">ASUS TUF 28" 4K Gaming</h5>
+                        <ul class="feature-list">
+                            <li>4K UHD</li>
+                            <li>144Hz Refresh Rate</li>
+                            <li>G-Sync Compatible</li>
+                        </ul>
+                        <p class="price mt-auto">₹32,999</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON006">
+                            <input type="hidden" name="name" value="ASUS TUF 28 4K Gaming Monitor">
+                            <input type="hidden" name="price" value="32999">
+                            <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/71F44v0GafL._SL1500_.jpg">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MON007 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://m.media-amazon.com/images/I/71FWKk+tIDL._SL1500_.jpg" alt="Samsung Odyssey G5 34 Curved">
+                        <div class="size-badge">34"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Samsung Odyssey G5 34" Curved</h5>
+                        <ul class="feature-list">
+                            <li>UWQHD Curved</li>
+                            <li>165Hz Refresh Rate</li>
+                            <li>Immersive Gaming</li>
+                        </ul>
+                        <p class="price mt-auto">₹38,499</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON007">
+                            <input type="hidden" name="name" value="Samsung Odyssey G5 34 Curved Monitor">
+                            <input type="hidden" name="price" value="38499">
+                            <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/71FWKk+tIDL._SL1500_.jpg">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MON008 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://m.media-amazon.com/images/I/81pPK0Q7PqL._SL1500_.jpg" alt="HP M24f 24 IPS Full HD">
+                        <div class="size-badge">24"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">HP M24f 24" IPS</h5>
+                        <ul class="feature-list">
+                            <li>Full HD 1080p</li>
+                            <li>Ultra Slim Design</li>
+                            <li>Eye Ease Low Blue Light</li>
+                        </ul>
+                        <p class="price mt-auto">₹11,499</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON008">
+                            <input type="hidden" name="name" value="HP M24f 24 IPS Monitor">
+                            <input type="hidden" name="price" value="11499">
+                            <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/81pPK0Q7PqL._SL1500_.jpg">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MON009 -->
+            <div class="col-md-4">
+                <div class="monitor-card card shadow-sm">
+                    <div class="monitor-image">
+                        <img src="https://m.media-amazon.com/images/I/71fZC3GydgL._SL1500_.jpg" alt="BenQ PD2700U 27 Designer">
+                        <div class="size-badge">27"</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">BenQ PD2700U 27" Designer</h5>
+                        <ul class="feature-list">
+                            <li>4K UHD</li>
+                            <li>Factory Calibrated</li>
+                            <li>Ideal for Creators</li>
+                        </ul>
+                        <p class="price mt-auto">₹39,999</p>
+
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="id" value="MON009">
+                            <input type="hidden" name="name" value="BenQ PD2700U 27 Designer Monitor">
+                            <input type="hidden" name="price" value="39999">
+                            <input type="hidden" name="image" value="https://m.media-amazon.com/images/I/71fZC3GydgL._SL1500_.jpg">
+                            <button type="submit" class="buy-btn">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <p>© 2025 Qualitron. All Rights Reserved.</p>
+</footer>
+
+<script>
+document.getElementById('sizeFilterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const laptopSize = parseInt(document.getElementById('laptopSize').value);
+    const usage = document.getElementById('usage').value;
+
+    // Remove all existing recommendation badges
+    document.querySelectorAll('.recommended-badge').forEach(badge => badge.remove());
+
+    if (!laptopSize || !usage) return;
+
+    let recommendations = [];
+
+    if (usage === 'gaming') {
+        if (laptopSize <= 15) {
+            recommendations = ['27"', '28"'];   // sweet spot for smaller laptops
+        } else {
+            recommendations = ['32"', '34"'];   // big curved / large panels
+        }
+    } else if (usage === 'professional') {
+        if (laptopSize <= 14) {
+            recommendations = ['27"'];          // 27" 4K / QHD
+        } else {
+            recommendations = ['27"', '32"'];   // more screen real estate
+        }
+    } else {
+        if (laptopSize <= 14) {
+            recommendations = ['24"'];          // compact general use
+        } else {
+            recommendations = ['24"', '27"'];   // comfortable larger screens
+        }
+    }
+
+    // Add "Recommended" badge to matching monitors
+    document.querySelectorAll('.size-badge').forEach(badge => {
+        if (recommendations.includes(badge.textContent)) {
+            const parent = badge.closest('.monitor-image');
+            const div = document.createElement('div');
+            div.className = 'recommended-badge';
+            div.textContent = 'Recommended';
+            parent.appendChild(div);
+        }
+    });
+});
+</script>
+
+</body>
+</html>

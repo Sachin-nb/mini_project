@@ -1,0 +1,111 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Add Laptop{% endblock %}
+{% block page_title %}Add New Laptop{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <p style="color: #7f8c8d; margin: 0;">Fill in the details to add a new laptop to your inventory</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="stats-card">
+      <form method="POST">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="company" class="form-label" style="font-weight: 600; color: #2c3e50;">Company</label>
+            <input type="text" class="form-control" id="company" name="company" placeholder="e.g., Dell, HP, Lenovo"
+              required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="product" class="form-label" style="font-weight: 600; color: #2c3e50;">Product Name</label>
+            <input type="text" class="form-control" id="product" name="product" placeholder="e.g., Inspiron 15 3000"
+              required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="price" class="form-label" style="font-weight: 600; color: #2c3e50;">Price (₹)</label>
+            <input type="number" class="form-control" id="price" name="price" placeholder="Enter price in rupees"
+              min="0" step="0.01" required>
+          </div>
+
+          <div class="col-md-6">
+            <label for="warranty" class="form-label" style="font-weight: 600; color: #2c3e50;">Warranty Status</label>
+            <input type="text" class="form-control" id="warranty" name="warranty" placeholder="e.g., 1 Year, 2 Years"
+              required>
+          </div>
+
+          <div class="col-12">
+            <label for="image" class="form-label" style="font-weight: 600; color: #2c3e50;">Image URL</label>
+            <input type="url" class="form-control" id="image" name="image"
+              placeholder="https://example.com/laptop-image.jpg" required>
+          </div>
+
+          <div class="col-12">
+            <hr style="margin: 20px 0; border-color: #ecf0f1;">
+            <h6 style="color: #2c3e50; font-weight: 600; margin-bottom: 15px;">
+              <i class="fas fa-link" style="color: #3498db;"></i> Product Links (Optional)
+            </h6>
+          </div>
+
+          <div class="col-12">
+            <label for="amazon_link" class="form-label" style="font-weight: 600; color: #2c3e50;">
+              <i class="fab fa-amazon" style="color: #ff9900;"></i> Amazon Product Link
+            </label>
+            <input type="url" class="form-control" id="amazon_link" name="amazon_link"
+              placeholder="https://www.amazon.in/...">
+          </div>
+
+          <div class="col-12">
+            <label for="flipkart_link" class="form-label" style="font-weight: 600; color: #2c3e50;">
+              <i class="fas fa-shopping-bag" style="color: #f0c14b;"></i> Flipkart Product Link
+            </label>
+            <input type="url" class="form-control" id="flipkart_link" name="flipkart_link"
+              placeholder="https://www.flipkart.com/...">
+          </div>
+
+          <div class="col-12">
+            <hr style="margin: 20px 0; border-color: #ecf0f1;">
+            <div style="display: flex; gap: 15px;">
+              <button type="submit" class="btn btn-success" style="flex: 1;">
+                <i class="fas fa-check-circle"></i> Add Laptop
+              </button>
+              <a href="/admin/laptops" class="btn" style="background: #ecf0f1; color: #2c3e50;">
+                <i class="fas fa-times"></i> Cancel
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Help Section -->
+  <div class="col-lg-4">
+    <div class="stats-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+      <h6 style="font-weight: 600; margin-bottom: 15px;">
+        <i class="fas fa-info-circle"></i> Quick Tips
+      </h6>
+      <ul style="font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0;">
+        <li>Enter accurate product details</li>
+        <li>Use high-quality image URLs</li>
+        <li>Verify prices before adding</li>
+        <li>Product links help with price comparison</li>
+      </ul>
+    </div>
+
+    <div class="stats-card mt-3" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+      <h6 style="font-weight: 600; margin-bottom: 10px;">
+        <i class="fas fa-lightbulb"></i> Remember
+      </h6>
+      <p style="font-size: 14px; margin: 0; line-height: 1.6;">
+        All fields marked as required must be filled. Optional fields can be added later through the edit page.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

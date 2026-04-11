@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Admin Face - Qualitron</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Face-API.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .register-subtitle {
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        #video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transform: scaleX(-1);
+            /* Mirror effect */
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: scaleX(-1);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scale(1.2);
+        }
+
+        .btn-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-custom:disabled {
+            background: #9ca3af;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .status-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .status-error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+            transform: translateX(-5px);
+        }
+
+        .instruction-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        .instruction-box strong {
+            color: #78350f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <h1 class="register-title">🔐 Register Admin Face</h1>
+            <p class="register-subtitle">Secure your admin panel with facial recognition</p>
+
+            {% if total_registered > 0 %}
+            <div class="status-message status-info">
+                <strong>ℹ️ Multi-Admin System:</strong> {{ total_registered }} admin face(s) already registered. You can
+                add another admin.
+            </div>
+            {% endif %}
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, msg in messages %}
+            <div class="status-message status-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% if show_auth %}
+            <!-- Username & Password Authentication Form -->
+            {% if require_emergency %}
+            <div class="status-message status-error">
+                <strong>🚨 EMERGENCY RE-REGISTRATION</strong><br>
+                A face is already registered. Re-registration should only be done in emergencies.<br>
+                This will PERMANENTLY delete the existing face data!
+            </div>
+            <div class="instruction-box">
+                <strong>⚠️ Security Verification:</strong> To prevent unauthorized changes, you must provide BOTH
+                username AND password to proceed with re-registration.
+            </div>
+            {% else %}
+            <div class="instruction-box">
+                <strong>🔒 Security Check:</strong> To prevent unauthorized registration, please enter your admin
+                credentials to continue.
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/admin/face/register">
+                <div class="mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="Admin Username"
+                        style="border: 2px solid #e5e7eb; border-radius:12px; padding: 0.85rem 1rem;" required
+                        autofocus>
+                </div>
+                <div class="mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="Admin Password"
+                        style="border: 2px solid #e5e7eb; border-radius:12px; padding: 0.85rem 1rem;" required>
+                </div>
+                <button type="submit" class="btn btn-custom">
+                    {% if require_emergency %}
+                    🔄 Confirm Re-Registration
+                    {% else %}
+                    🔓 Verify & Continue
+                    {% endif %}
+                </button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="/admin/login" class="back-link">← Back to Login</a>
+            </div>
+
+            {% else %}
+            <!-- Face Capture Interface (shown after authentication) -->
+            <div class="step-indicator" id="stepIndicator">
+                <div class="step active"></div>
+                <div class="step"></div>
+                <div class="step"></div>
+                <div class="step"></div>
+                <div class="step"></div>
+            </div>
+
+            <div class="instruction-box">
+                <strong>Instructions:</strong> Position your face in the center of the camera. Ensure good lighting and
+                look directly at the camera. We'll capture <strong>5 images</strong> for maximum accuracy.
+                <br><br>
+                <strong>⚠️ Important:</strong> Only ONE face can be registered. Your face will be the ONLY face
+                authorized to access the admin panel.
+            </div>
+
+            <div id="statusMessage"></div>
+
+            <div id="video-container">
+                <video id="video" autoplay muted playsinline></video>
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div class="text-center mb-3">
+                <span id="captureCount" style="font-size: 1.1rem; font-weight: 600; color: #667eea;">0 / 5
+                    captures</span>
+            </div>
+
+            <button id="captureBtn" class="btn btn-custom mb-3" onclick="captureFace()">
+                Start Capture
+            </button>
+
+            <button id="saveBtn" class="btn btn-custom" onclick="saveFaceData()" style="display: none;">
+                {% if face_registered %}
+                🔄 Update Face Profile
+                {% else %}
+                💾 Save Face Profile
+                {% endif %}
+            </button>
+
+            <div class="text-center">
+                <a href="/admin/login" class="back-link">← Back to Login</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        let video, canvas, ctx;
+        let faceDescriptors = [];
+        let captureCount = 0;
+        const maxCaptures = 5;  // Increased from 3 to 5 for better accuracy
+        let modelsLoaded = false;
+
+        async function loadModels() {
+            showStatus('Loading face detection models...', 'info');
+            const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+
+            try {
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                    faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                    faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+                ]);
+                modelsLoaded = true;
+                showStatus('Models loaded! Ready to capture.', 'success');
+                enableCaptureButton();
+            } catch (error) {
+                showStatus('Error loading models. Please refresh the page.', 'error');
+                console.error('Model loading error:', error);
+            }
+        }
+
+        async function startVideo() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user' }
+                });
+                video.srcObject = stream;
+            } catch (error) {
+                showStatus('Unable to access camera. Please grant camera permissions.', 'error');
+                console.error('Camera error:', error);
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+        }
+
+        function enableCaptureButton() {
+            const btn = document.getElementById('captureBtn');
+            btn.disabled = false;
+        }
+
+        function updateStepIndicator() {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.classList.toggle('active', index < captureCount);
+            });
+        }
+
+        async function captureFace() {
+            if (!modelsLoaded) {
+                showStatus('Please wait for models to load...', 'info');
+                return;
+            }
+
+            if (captureCount >= maxCaptures) {
+                showStatus('Maximum captures reached!', 'info');
+                return;
+            }
+
+            const btn = document.getElementById('captureBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Detecting face...';
+
+            try {
+                const detections = await faceapi
+                    .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+
+                if (detections) {
+                    faceDescriptors.push(Array.from(detections.descriptor));
+                    captureCount++;
+
+                    document.getElementById('captureCount').textContent = `${captureCount} / ${maxCaptures} captures`;
+                    updateStepIndicator();
+
+                    // Draw detection box
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    faceapi.draw.drawDetections(canvas, detections);
+
+                    if (captureCount >= maxCaptures) {
+                        showStatus('✓ All captures complete! You can now save your face profile.', 'success');
+                        btn.style.display = 'none';
+                        document.getElementById('saveBtn').style.display = 'block';
+                    } else {
+                        showStatus(`✓ Capture ${captureCount} successful! ${maxCaptures - captureCount} more to go.`, 'success');
+                        btn.disabled = false;
+                        btn.innerHTML = `Capture Next (${captureCount}/${maxCaptures})`;
+                    }
+                } else {
+                    showStatus('No face detected. Please ensure your face is clearly visible.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = captureCount === 0 ? 'Start Capture' : `Capture Next (${captureCount}/${maxCaptures})`;
+                }
+            } catch (error) {
+                showStatus('Error during face detection. Please try again.', 'error');
+                console.error('Detection error:', error);
+                btn.disabled = false;
+                btn.innerHTML = captureCount === 0 ? 'Start Capture' : `Capture Next (${captureCount}/${maxCaptures})`;
+            }
+        }
+
+        async function saveFaceData() {
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Saving...';
+
+            try {
+                const response = await fetch('/api/save_face', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        descriptors: faceDescriptors
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('Face profile saved successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/admin/login';
+                    }, 2000);
+                } else {
+                    showStatus(data.message || 'Error saving face data.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Save Face Profile';
+                }
+            } catch (error) {
+                showStatus('Network error. Please try again.', 'error');
+                console.error('Save error:', error);
+                btn.disabled = false;
+                btn.innerHTML = 'Save Face Profile';
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Only initialize if authenticated (video element present)
+            video = document.getElementById('video');
+
+            if (video) {
+                // User is authenticated, initialize face capture
+                canvas = document.getElementById('canvas');
+                ctx = canvas.getContext('2d');
+
+                document.getElementById('captureBtn').disabled = true;
+
+                await loadModels();
+                await startVideo();
+            }
+            // If video element doesn't exist, user needs to enter password first
+        });
+    </script>
+</body>
+
+</html>

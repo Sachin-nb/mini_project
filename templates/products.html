@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qualitron - Products</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ url_for('static', filename='images/Qualitron.png') }}" alt="Qualitron Logo"
+                    class="logo me-2">
+            </a>
+
+            <!-- Toggler for mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center gap-3">
+                    <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/shop">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link active text-dark fw-semibold" href="/products">Laptops</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/warranty">Warranty</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/contact">Contact Us</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-semibold" href="/admin/login">Admin</a>
+                    </li>
+                    <li class="nav-item position-relative">
+                        <a class="nav-link text-dark fw-semibold" href="/cart">
+                            Cart
+                            {% if cart_count > 0 %}
+                            <span class="badge bg-danger rounded-pill" id="cart-count-badge">
+                                {{ cart_count }}
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="container products-container d-flex mt-4">
+
+        <!-- ⬅ LEFT FILTER SIDEBAR -->
+        <div class="sidebar p-3 shadow-sm"
+            style="width: 280px; background: #ffffff; border-radius: 10px; height: fit-content;">
+            <h4 class="mb-3">Filters</h4>
+            <form method="GET" action="/products">
+
+                <!-- Brand -->
+                <label class="fw-semibold">Brand</label>
+                <select name="brand" class="form-select mb-3">
+                    <option value="all">All Brands</option>
+                    {% for brand in brands %}
+                    <option value="{{ brand }}" {% if current_brand==brand %}selected{% endif %}>{{ brand }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <!-- RAM -->
+                <label class="fw-semibold">RAM</label>
+                <select name="ram" class="form-select mb-3">
+                    <option value="">All RAM</option>
+                    {% for ram in ram_options %}
+                    <option value="{{ ram }}" {% if current_ram==ram %}selected{% endif %}>{{ ram }} GB</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Storage -->
+                <label class="fw-semibold">Storage</label>
+                <select name="storage" class="form-select mb-3">
+                    <option value="">All Storage</option>
+                    {% for storage in storage_options %}
+                    <option value="{{ storage }}" {% if current_storage==storage %}selected{% endif %}>{{ storage }}
+                        GB
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <!-- OS -->
+                <label class="fw-semibold">Operating System</label>
+                <select name="os" class="form-select mb-3">
+                    <option value="">All OS</option>
+                    <option>Windows</option>
+                    <option>MacOS</option>
+                    <option>Linux</option>
+                    <option>ChromeOS</option>
+                </select>
+
+                <!-- Processor -->
+                <label class="fw-semibold">Processor</label>
+                <select name="processor" class="form-select mb-3">
+                    <option value="">All Processors</option>
+                    <option>Intel i5</option>
+                    <option>Intel i7</option>
+                    <option>Ryzen 5</option>
+                    <option>Ryzen 7</option>
+                </select>
+
+                <!-- Graphics -->
+                <label class="fw-semibold">Graphics</label>
+                <select name="graphics" class="form-select mb-3">
+                    <option value="">Any</option>
+                    <option>Integrated</option>
+                    <option>2GB</option>
+                    <option>4GB</option>
+                    <option>6GB</option>
+                    <option>RTX Series</option>
+                </select>
+
+                <!-- Price Range -->
+                <label class="fw-semibold">Price Range</label>
+                <div class="d-flex gap-2 mb-3">
+                    <input type="number" name="min_price" class="form-control" placeholder="Min ₹">
+                    <input type="number" name="max_price" class="form-control" placeholder="Max ₹">
+                </div>
+
+                <!-- Sort -->
+                <label class="fw-semibold">Sort By</label>
+                <select name="sort" class="form-select mb-3">
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary w-100 mb-2">Apply Filters</button>
+                <a href="/products" class="btn btn-secondary w-100">Clear Filters</a>
+            </form>
+        </div>
+
+        <!-- ➡ RIGHT CONTENT — PRODUCT LIST -->
+        <div class="flex-grow-1 ps-4">
+            <h1>Our Laptops</h1>
+            <p class="text-muted">Showing {{ laptops|length }} laptops</p>
+
+            <div class="products-grid">
+                {% for laptop in laptops %}
+                <div class="product-card" data-product-id="{{ laptop.ID }}">
+                    <div class="product-image">
+                        {% if laptop.image_url %}
+                        <img src="{{ laptop.image_url }}" alt="{{ laptop.Brand }} {{ laptop.Product }}"
+                            class="product-img"
+                            onerror="this.onerror=null; this.src='/static/images/laptop-placeholder.png';">
+                        {% else %}
+                        <div class="placeholder-img">{{ laptop.Brand }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3>{{ laptop.Brand }} {{ laptop.Product }}</h3>
+                        <div class="product-specs">
+                            <span>💾 {{ laptop.RAM_Size }}GB RAM</span>
+                            <span>💿 {{ laptop.Storage_Capacity }}GB SSD</span>
+                            <span>📺 {{ laptop.Screen_Size|round(1) }}"</span>
+                            <span>⚡ {{ laptop.Processor_Speed|round(1) }}GHz</span>
+                        </div>
+                        <div class="product-price" id="price-{{ laptop.ID }}">
+                            <strong>₹{{ "{:,.2f}".format(laptop.Price) }}</strong>
+                        </div>
+                        <div class="d-flex gap-2 mt-2">
+                            <!-- View Details button -->
+                            <a href="/product/{{ laptop.ID }}" class="btn btn-primary w-50">View Details</a>
+
+                            <!-- Add to Cart button -->
+                            <form action="/add_to_cart" method="post" class="w-50">
+                                <input type="hidden" name="id" value="{{ laptop.ID }}">
+                                <input type="hidden" name="name" value="{{ laptop.Brand }} {{ laptop.Product }}">
+                                <input type="hidden" name="price" value="{{ laptop.Price }}">
+                                <input type="hidden" name="image" value="{{ laptop.image_url }}">
+                                <button type="submit" class="btn btn-success w-100">Add to Cart</button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 LaptopShop. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const productCards = document.querySelectorAll(".product-card");
+
+            productCards.forEach(card => {
+                const productId = card.dataset.productId;
+                if (!productId) return;
+
+                const priceElement = document.getElementById(`price-${productId}`);
+
+                // Show loading state (optional, or just keep showing predicted price)
+                // priceElement.innerHTML += ' <small class="text-muted" style="font-size: 0.6em;">(updating...)</small>';
+
+                fetch(`/api/get_price/${productId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.lowest_price) {
+                            // Format price with commas
+                            const formattedPrice = new Intl.NumberFormat('en-IN', {
+                                style: 'currency',
+                                currency: 'INR'
+                            }).format(data.lowest_price);
+
+                            priceElement.innerHTML = `<strong>${formattedPrice}</strong>`;
+
+                            // Update hidden inputs if they exist (for add to cart)
+                            const form = card.querySelector('form');
+                            if (form) {
+                                const priceInput = form.querySelector('input[name="price"]');
+                                if (priceInput) priceInput.value = data.lowest_price;
+                            }
+                        }
+                    })
+                    .catch(err => console.error("Error fetching price:", err));
+            });
+        });
+    </script>
+</body>
+
+</html>

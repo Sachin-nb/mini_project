@@ -1,0 +1,134 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+  <!-- Total Laptops Card -->
+  <div class="col-md-4">
+    <div class="stats-card" style="border-left: 4px solid #3498db;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h6 style="color: #7f8c8d; margin-bottom: 10px; font-size: 14px; text-transform: uppercase;">Total Laptops
+          </h6>
+          <h2 style="color: #2c3e50; font-weight: 700; margin: 0;">{{ laptop_count }}</h2>
+        </div>
+        <div
+          style="width: 60px; height: 60px; background: linear-gradient(135deg, #3498db, #2980b9); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-laptop" style="font-size: 28px; color: white;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Orders Card -->
+  <div class="col-md-4">
+    <div class="stats-card" style="border-left: 4px solid #27ae60;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h6 style="color: #7f8c8d; margin-bottom: 10px; font-size: 14px; text-transform: uppercase;">Total Orders</h6>
+          <h2 style="color: #2c3e50; font-weight: 700; margin: 0;">{{ order_count }}</h2>
+        </div>
+        <div
+          style="width: 60px; height: 60px; background: linear-gradient(135deg, #27ae60, #229954); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-shopping-cart" style="font-size: 28px; color: white;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Messages Card -->
+  <div class="col-md-4">
+    <div class="stats-card" style="border-left: 4px solid #f39c12;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h6 style="color: #7f8c8d; margin-bottom: 10px; font-size: 14px; text-transform: uppercase;">Messages</h6>
+          <h2 style="color: #2c3e50; font-weight: 700; margin: 0;">{{ contact_count }}</h2>
+        </div>
+        <div
+          style="width: 60px; height: 60px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-envelope" style="font-size: 28px; color: white;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-4">
+  <div class="col-12">
+    <div class="stats-card">
+      <h5 style="color: #2c3e50; font-weight: 600; margin-bottom: 20px;">
+        <i class="fas fa-bolt" style="color: #f39c12;"></i> Quick Actions
+      </h5>
+      <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <a href="/admin/laptops" class="btn btn-primary">
+          <i class="fas fa-laptop-code"></i> Manage Laptops
+        </a>
+        <a href="/admin/orders" class="btn btn-success">
+          <i class="fas fa-shopping-cart"></i> Manage Orders
+        </a>
+        <a href="/admin/contact_messages" class="btn btn-warning">
+          <i class="fas fa-envelope"></i> View Messages
+        </a>
+        <a href="/admin/laptops/add" class="btn btn-primary" style="background: #9b59b6; border: none;">
+          <i class="fas fa-plus-circle"></i> Add New Laptop
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activity Section (Optional Enhancement) -->
+<div class="row g-4 mt-2">
+  <div class="col-12">
+    <div class="stats-card">
+      <h5 style="color: #2c3e50; font-weight: 600; margin-bottom: 15px;">
+        <i class="fas fa-chart-line" style="color: #3498db;"></i> System Overview
+      </h5>
+      <div class="row">
+        <div class="col-md-4 text-center" style="padding: 20px;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto 15px; background: linear-gradient(135deg, #e8f4f8, #d4e9f2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-database" style="font-size: 32px; color: #3498db;"></i>
+          </div>
+          <p style="margin: 0; color: #7f8c8d; font-size: 14px;">Database Status</p>
+          <p style="margin: 5px 0 0; color: #27ae60; font-weight: 600;">Active</p>
+        </div>
+        <div class="col-md-4 text-center"
+          style="padding: 20px; border-left: 1px solid #ecf0f1; border-right: 1px solid #ecf0f1;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto 15px; background: linear-gradient(135deg, #e8f8f0, #d4f0e3); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-server" style="font-size: 32px; color: #27ae60;"></i>
+          </div>
+          <p style="margin: 0; color: #7f8c8d; font-size: 14px;">Server Status</p>
+          <p style="margin: 5px 0 0; color: #27ae60; font-weight: 600;">Online</p>
+        </div>
+        <div class="col-md-4 text-center" style="padding: 20px;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto 15px; background: linear-gradient(135deg, #fef5e7, #fdebd0); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-clock" style="font-size: 32px; color: #f39c12;"></i>
+          </div>
+          <p style="margin: 0; color: #7f8c8d; font-size: 14px;">Last Updated</p>
+          <p style="margin: 5px 0 0; color: #2c3e50; font-weight: 600;" id="last-updated">Just now</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Update last updated time
+  function updateTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('last-updated').textContent = `${hours}:${minutes}`;
+  }
+  updateTime();
+  setInterval(updateTime, 60000); // Update every minute
+</script>
+{% endblock %}
