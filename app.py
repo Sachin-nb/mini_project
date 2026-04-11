@@ -1702,7 +1702,7 @@ def admin_delete_laptop(id):
     conn.commit()
     conn.close()
 
-    flash("Laptop deleted successfully!", "info")
+    flash("Laptop deleted successfully!", "success")
     return redirect(url_for("admin_laptops"))
 
 
