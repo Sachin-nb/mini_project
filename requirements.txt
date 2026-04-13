@@ -11,3 +11,4 @@ schedule
 Pillow
 fpdf
 python-dotenv
+pdfkit
